@@ -23,7 +23,7 @@ const meshStyle: LayerProps = {
       ["+", 255, ["/", 255, ["get", "Bathymetry"]]],
     ],
     "fill-opacity": 0.75,
-    "fill-outline-color": "#970101",
+    "fill-outline-color": "#9b0909",
   },
 };
 
@@ -48,7 +48,6 @@ const Map = ({
       width={width}
       height={height}
       mapboxApiAccessToken={import.meta.env.VITE_MapboxAccessToken as string}
-      interactiveLayerIds={["boundrydata"]}
       {...rest}
     >
       <SvgOverlayData data={svgdata} radius={12} />
