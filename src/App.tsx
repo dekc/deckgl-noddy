@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlyToInterpolator } from "react-map-gl";
+import { FlyToInterpolator, ViewportProps } from "react-map-gl";
 import { InteractiveMapProps } from "react-map-gl/src/components/interactive-map";
 import { ViewState } from "react-map-gl/src/mapbox/mapbox";
 import { csv, json } from "d3";
@@ -17,10 +17,14 @@ const Boundry = "http://localhost:8989/boundryllproj.json";
 const Mesh = "http://localhost:8989/mesh_original.geo.json";
 
 function App() {
-  const [viewState, setViewState] = useState<ViewState>(capitals.Goldie);
+  const [viewState, setViewState] = useState<ViewportProps>(capitals.Goldie);
   const [data, setData] = useState([]);
   const [boundries, setBoundries] = useState();
   const [mesh, setMesh] = useState();
+  const [showMesh, setShowMesh] = useState<boolean>(true);
+  const [mapStyle, setMapStyle] = useState<string>(
+    "mapbox://styles/mapbox/satellite-v9"
+  );
 
   useEffect(() => {
     csv(TrafficInter, (d: any, ind: number) => ({
@@ -40,17 +44,32 @@ function App() {
     });
   }, []);
 
-  const handleViewStateChange = ({
-    viewState,
-  }: {
-    viewState: InteractiveMapProps;
-  }) => setViewState(viewState);
+  const handleViewStateChange = ({ viewState }: { viewState: ViewportProps }) =>
+    setViewState(viewState);
 
-  const handleFlyTo = (destination: InteractiveMapProps) => {
+  const handleFlyTo = (destination: ViewportProps) => {
     setViewState({
       ...viewState,
       ...destination,
+      transitionDuration: 2000,
+      transitionInterpolator: new FlyToInterpolator(),
     });
+  };
+
+  const toggleMesh = () => setShowMesh(!showMesh);
+
+  const handleOnChange = (e: HTMLInputElement) => {
+    const { value } = e.target;
+    switch (value) {
+      case "streets":
+        setMapStyle("mapbox://styles/mapbox/streets-v11");
+        break;
+      case "satellite":
+        setMapStyle("mapbox://styles/mapbox/satellite-streets-v11");
+        break;
+      default:
+        break;
+    }
   };
 
   return (
@@ -60,13 +79,13 @@ function App() {
         <Map
           width="100vw"
           height="100%"
-          viewState={viewState}
+          mapStyle={mapStyle}
+          viewState={viewState as ViewState}
           onViewStateChange={handleViewStateChange}
-          transitionInterpolator={new FlyToInterpolator()}
-          transitionDuration={2000}
           svgdata={data}
           boundrydata={boundries}
           meshdata={mesh}
+          showMesh={showMesh}
         />
         <div className="controls">
           {Object.keys(capitals).map((key) => {
@@ -76,6 +95,30 @@ function App() {
               </button>
             );
           })}
+        </div>
+        <div className="layers">
+          <button onClick={toggleMesh}>
+            {showMesh ? "Hide mesh " : "Show mesh"}
+          </button>
+          <div className="baselayers">
+            <input
+              type="radio"
+              id="streets"
+              name="base_layer"
+              value="streets"
+              onChange={handleOnChange}
+            />
+            <label htmlFor="streets">Streets</label>
+            <br />
+            <input
+              type="radio"
+              id="satellite"
+              name="base_layer"
+              value="satellite"
+              onChange={handleOnChange}
+            />
+            <label htmlFor="streets">Satellite</label>
+          </div>
         </div>
       </main>
       <footer id="footer">Map Footer</footer>

@@ -22,8 +22,8 @@ const meshStyle: LayerProps = {
       0,
       ["+", 255, ["/", 255, ["get", "Bathymetry"]]],
     ],
-    "fill-opacity": 0.75,
-    "fill-outline-color": "#9b0909",
+    "fill-opacity": 0.45,
+    "fill-outline-color": "#d10e0e",
   },
 };
 
@@ -33,6 +33,7 @@ export type MapProps = InteractiveMapProps & {
   svgdata: any;
   boundrydata: any;
   meshdata: any;
+  showMesh?: boolean;
 };
 
 const Map = ({
@@ -41,6 +42,7 @@ const Map = ({
   svgdata,
   boundrydata,
   meshdata,
+  showMesh = false,
   ...rest
 }: MapProps) => {
   return (
@@ -51,16 +53,19 @@ const Map = ({
       {...rest}
     >
       <SvgOverlayData data={svgdata} radius={12} />
-      <GeoJsonOverlayData
-        data={meshdata}
-        layerId="boundry"
-        layerStyle={meshStyle}
-      />
+      {showMesh && (
+        <GeoJsonOverlayData
+          data={meshdata}
+          layerId="boundry"
+          layerStyle={meshStyle}
+        />
+      )}
       <GeoJsonOverlayData
         data={boundrydata}
         layerId="mesh"
         layerStyle={boundryStyle}
       />
+      )
     </MapGL>
   );
 };

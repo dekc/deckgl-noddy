@@ -58,7 +58,7 @@ button {
   bottom: 50px;
   left: 0;
   right: 0;
-  background-color: #f63;
+  background-color: rgb(4, 35, 93);
   overflow: auto;
 }
 
@@ -77,7 +77,7 @@ button {
 .controls > button {
   cursor: pointer;
   display: block;
-  font-size: calc(8px + 1vmin);
+  font-size: calc(4px + 1vmin);
   margin-bottom: 0.2em;
   width: 100%;
   background-color: #282c34;
@@ -91,5 +91,71 @@ button {
 }
 
 .controls > button:active {
+  background: #666;
+}
+
+.controls > button:focus {
+  background: #666;
+}
+
+.layers {
+  position: absolute;
+  z-index: 100;
+  padding: 10px;
+  top: 0;
+  left: 0;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.layers > button {
+  cursor: pointer;
+  display: block;
+  font-size: calc(4px + 1vmin);
+  margin-bottom: 0.2em;
+  width: 100%;
+  background-color: #282c34;
+  border: none;
+  border-radius: 4px;
+  color: white;
+}
+
+.layers > button:hover {
+  background-color: #f63;
+}
+
+.layers > button:active {
   background-color: #666;
+}
+
+.layers > button:focus {
+  background-color: #666;
+}
+
+.baselayers {
+  display: block;
+  z-index: 100;
+  padding: 6px;
+  top: 0;
+  left: 0;
+  color: white;
+  text-align: left;
+  font-weight: normal;
+  line-height: 1;
+  background-color: #282c34;
+  border-radius: 4px;
+}
+
+.baselayers input {
+  height: 8px;
+}
+
+.baselayers > label {
+  font-size: calc(4px + 1vmin);
+  width: 100%;
+  background-color: #282c34;
+  border: none;
+  color: white;
 }
