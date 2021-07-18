@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FlyToInterpolator, ViewportProps } from "react-map-gl";
-import { InteractiveMapProps } from "react-map-gl/src/components/interactive-map";
 import { ViewState } from "react-map-gl/src/mapbox/mapbox";
 import { csv, json } from "d3";
 
@@ -82,10 +81,10 @@ function App() {
           mapStyle={mapStyle}
           viewState={viewState as ViewState}
           onViewStateChange={handleViewStateChange}
+          showMesh={showMesh}
           svgdata={data}
           boundrydata={boundries}
           meshdata={mesh}
-          showMesh={showMesh}
         />
         <div className="controls">
           {Object.keys(capitals).map((key) => {

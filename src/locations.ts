@@ -66,9 +66,10 @@ const Canberra: ViewportProps = {
   bearing: 0,
 };
 
-export type Locations = {
-  [key: string]: ViewportProps;
-};
+export type Locations = Record<string, ViewportProps>
+// export type Locations = {
+//   [key: string]: ViewportProps;
+// };
 
 export const capitals: Locations = {
   Goldie,
