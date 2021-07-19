@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlyToInterpolator, ViewportProps } from "react-map-gl";
 import { ViewState } from "react-map-gl/src/mapbox/mapbox";
 import { csv, json } from "d3";
+import JSZip from "jszip";
 
 import Map from "./Map";
 import "./App.css";
@@ -13,7 +14,7 @@ const TrafficInter =
 const wsb =
   "https://data.gov.au/data/dataset/1b853228-5bc4-42e6-82e7-5d43a563251d/resource/323ae3a5-66b8-432c-8b64-ddda32fc93e6/download/wasteboundary.kmz";
 const Boundry = "http://localhost:8989/boundryllproj.json";
-const Mesh = "http://localhost:8989/mesh_original.geo.json";
+const MeshGzip = "http://150.203.5.144/mesh_original.geo.json.zip";
 
 function App() {
   const [viewState, setViewState] = useState<ViewportProps>(capitals.Goldie);
@@ -24,6 +25,8 @@ function App() {
   const [mapStyle, setMapStyle] = useState<string>(
     "mapbox://styles/mapbox/satellite-v9"
   );
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
 
   useEffect(() => {
     csv(TrafficInter, (d: any, ind: number) => ({
@@ -38,9 +41,29 @@ function App() {
       setBoundries(data);
     });
 
-    json(Mesh).then((data: any) => {
-      setMesh(data);
-    });
+    // json(Mesh).then((data: any) => {
+    //   setMesh(data);
+    // });
+
+    setLoading(true);
+    fetch(MeshGzip)
+      .then((res) => {
+        setLoadingText("Downloading compressed mesh file...");
+        return res.blob();
+      })
+      .then((blob) => {
+        setLoadingText("Uncompressing mesh file...");
+        return JSZip.loadAsync(blob);
+      })
+      .then((zip) => zip.file("mesh_original.geo.json")?.async("string"))
+      .then((geojson: any) => {
+        setLoadingText("Rendering mesh layer...");
+        setMesh(JSON.parse(geojson));
+      })
+      .finally(() => {
+        setLoading(false);
+        setLoadingText("");
+      });
   }, []);
 
   const handleViewStateChange = ({ viewState }: { viewState: ViewportProps }) =>
@@ -73,7 +96,18 @@ function App() {
 
   return (
     <div className="App box">
-      <header id="header">DeckGL Sandbox</header>
+      <header id="header">
+        <ul className="container">
+          <li className="item">
+            <span>DeckGL Sandbox</span>
+          </li>
+          {loading && (
+            <li className="item">
+              <span className="spinner">{loadingText}</span>
+            </li>
+          )}
+        </ul>
+      </header>
       <main id="content">
         <Map
           width="100vw"
@@ -100,23 +134,31 @@ function App() {
             {showMesh ? "Hide mesh " : "Show mesh"}
           </button>
           <div className="baselayers">
-            <input
-              type="radio"
-              id="streets"
-              name="base_layer"
-              value="streets"
-              onChange={handleOnChange}
-            />
-            <label htmlFor="streets">Streets</label>
+            <div className="radio">
+              <input
+                type="radio"
+                id="streets"
+                name="base_layer"
+                value="streets"
+                onChange={handleOnChange}
+              />
+              <label htmlFor="streets" className="radio-label">
+                Streets
+              </label>
+            </div>
             <br />
-            <input
-              type="radio"
-              id="satellite"
-              name="base_layer"
-              value="satellite"
-              onChange={handleOnChange}
-            />
-            <label htmlFor="streets">Satellite</label>
+            <div className="radio">
+              <input
+                type="radio"
+                id="satellite"
+                name="base_layer"
+                value="satellite"
+                onChange={handleOnChange}
+              />
+              <label htmlFor="satellite" className="radio-label">
+                Satellite
+              </label>
+            </div>
           </div>
         </div>
       </main>
