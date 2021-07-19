@@ -13,7 +13,7 @@ const TrafficInter =
   "https://data.gov.au/dataset/f28878de-4ea1-4ae2-a342-a08c2a5a4e7a/resource/9e58f0b8-9250-4cd6-9937-017c3510f654/download/rrcsignalisedintersections.csv";
 const wsb =
   "https://data.gov.au/data/dataset/1b853228-5bc4-42e6-82e7-5d43a563251d/resource/323ae3a5-66b8-432c-8b64-ddda32fc93e6/download/wasteboundary.kmz";
-const Boundry = "http://localhost:8989/boundryllproj.json";
+const Boundry = "http://150.203.5.144/boundryllproj.json";
 const MeshGzip = "http://150.203.5.144/mesh_original.geo.json.zip";
 
 function App() {
@@ -156,7 +156,7 @@ function App() {
                 onChange={handleOnChange}
               />
               <label htmlFor="satellite" className="radio-label">
-                Satellite
+                Hybrid Satellite
               </label>
             </div>
           </div>
